@@ -1,3 +1,7 @@
+2005-02-04  Andrew Janke  <rotor@bic.mni.mcgill.ca>
+
+	* Fixed autoconfiscation and epm-header build stuff
+
 2003-12-17  Jason Lerch	<jason@bic.mni.mcgill.ca>
 
 	* added autoconfiscation

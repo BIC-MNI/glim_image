@@ -1,9 +1,9 @@
 %product glim-image
 %copyright 1993-2004 Jonathan Taylor
 %vendor McConnell Brain Imaging Centre
-%packager Jason Lerch <jason@bic.mni.mcgill.ca>
+%packager Andrew Janke <rotor@bic.mni.mcgill.ca>
 %license LICENSE
 %readme README
 %description Statistics on volumes
-%version 1.0.0
-%requires mni-minc-jpl
+%version @VERSION@
+%requires minc

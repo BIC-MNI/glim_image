@@ -1,23 +1,25 @@
-dnl Process this file with autoconf to produce a configure script.
+# Require autoconf 2.57 or newer.
+AC_PREREQ([2.57])
 
-AC_INIT
-AC_CONFIG_SRCDIR([glim.c])
-AM_INIT_AUTOMAKE(glim_image, 1.0)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([glim_image],[1.1],[Jonathan Taylor])
+AC_CONFIG_SRCDIR([glim_image.c])
 
+AM_INIT_AUTOMAKE
+
+# The argument is the name of the generated header file.
+# It is recommended to leave it as "config.h".
+AC_CONFIG_HEADERS([config.h])
+
+# This macro eases building the package; see m4/README.
 smr_WITH_BUILD_PATH
 
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_MAKE_SET
-
+# Checks for programs.
 AC_PROG_CC
+AC_PROG_INSTALL
 
-AC_PROG_LIBTOOL
+# check for MINC
+mni_REQUIRE_VOLUMEIO
 
-mni_REQUIRE_BICPL
-
+# Finish up by writing output files.
 AC_CONFIG_FILES([Makefile])
-
-AC_OUTPUT
-
+AC_OUTPUT(epm-header)
