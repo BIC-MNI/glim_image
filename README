@@ -1,0 +1,10 @@
+README
+======
+
+glim_image is a tool for running general linear models across voxels
+of multiple MINC images. There's a bit of a lack of documentation
+right now, more will hopefully be coming soon. Check these two
+web-sites for updates:
+ http://www.bic.mni.mcgill.ca/software
+ http://www.bic.mni.mcgill.ca/software/distribution
+

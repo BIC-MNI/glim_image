@@ -1,0 +1,23 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT
+AC_CONFIG_SRCDIR([glim.c])
+AM_INIT_AUTOMAKE(glim_image, 1.0)
+AM_CONFIG_HEADER(config.h)
+
+smr_WITH_BUILD_PATH
+
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+AC_PROG_CC
+
+AC_PROG_LIBTOOL
+
+mni_REQUIRE_BICPL
+
+AC_CONFIG_FILES([Makefile])
+
+AC_OUTPUT
+
