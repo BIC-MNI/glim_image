@@ -2329,7 +2329,7 @@ void calculate_contrasts(Glm_Object *glm_obj)
          multiply_matrix(glm_obj->tmp_con[i][5], glm_obj->tmp_con[i][0],
                          glm_obj->tmp_con[i][4], MATRIX_LEFT);
 
-         f_stat = (glm_obj->tmp_con[i][5]->values[0][0] *
+         f_stat = (glm_obj->tmp_con[i][5]->values[0][0] /
                    cur_contrast->contrast_matrix->num_rows);
          
          if (cur_contrast->stdev_mode == VOXEL_SD){
