@@ -1329,6 +1329,11 @@ void voxel_function_glm(void *caller_data, long num_voxels,
 
       if (in_search == TRUE) {
 
+         if ((glm_obj->control->do_fit == TRUE) && 
+             (glm_obj->response->num_rows > 0)) {
+           is_same = TRUE;
+         }
+
          for(i=0; i < glm_obj->response->num_rows; i++) {
          
             glm_obj->missing->values[i][0] = 1.0;
@@ -1345,8 +1350,6 @@ void voxel_function_glm(void *caller_data, long num_voxels,
 
             if (glm_obj->control->do_fit == TRUE)  {
                
-               is_same = TRUE;
-
                if(i>0) {
                   if(input_data[i][ivox] == input_data[i-1][ivox])
                      same_test = TRUE;
