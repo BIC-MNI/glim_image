@@ -1400,8 +1400,6 @@ void voxel_function_glm(void *caller_data, long num_voxels,
                variance = INVALID_DATA;
                norm_avg_resid = INVALID_DATA;
             }
-            count--;   /* count becomes the deg_free now, for output in 
-                        tmp_count */
          }
       }
 
@@ -1567,7 +1565,7 @@ void voxel_function_glm(void *caller_data, long num_voxels,
       }
 
       if (glm_obj->control->count_id > 0) {
-         output_data[glm_obj->control->count_id][ivox] = count;
+         output_data[glm_obj->control->count_id][ivox] = count-1;
       }
 
       if (glm_obj->control->deg_free_id > 0) { 
