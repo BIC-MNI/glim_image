@@ -1206,7 +1206,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
 
    /* free up values and tmp_string*/
 
-   for(i=0; i<num_rows + 1; i++) {
+   for(i=0; i<num_rows; i++) {
       FREE(values[i]);
    } 
    FREE(values);  
