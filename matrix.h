@@ -16,7 +16,7 @@
 #include <float.h>
 #include <math.h>
 #ifndef lint
-static char matrix_h_rcsid[] = "$Header: /private-cvsroot/statistics/glim_image/matrix.h,v 1.1 1999-10-15 13:59:06 neelin Exp $ MINC (MNI)";
+static char matrix_h_rcsid[] = "$Header: /private-cvsroot/statistics/glim_image/matrix.h,v 1.1.1.1 1999-10-15 13:59:06 neelin Exp $ MINC (MNI)";
 #endif
 
 #ifndef FALSE
