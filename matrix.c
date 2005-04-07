@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------- */
 
 #include "matrix.h"
+#include "glim.h"
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_matrix
@@ -35,14 +36,14 @@ Matrix *create_matrix(int num_rows, int num_columns)
    int i, j;
    int error_flag = FALSE;
    
-   matrix_result = MALLOC(sizeof(Matrix));
+   matrix_result = GI_MALLOC(sizeof(Matrix));
    matrix_result->num_rows = num_rows;
    matrix_result->num_columns = num_columns; 
 
-   values = MALLOC(sizeof(*values) * num_rows);
+   values = GI_MALLOC(sizeof(*values) * num_rows);
    
    for(i=0; i < num_rows; i++) {
-      values[i] = MALLOC(sizeof(double) * num_columns);
+      values[i] = GI_MALLOC(sizeof(double) * num_columns);
       for(j=0; j < num_columns; j++) {
          values[i][j] = 0.0;
       }
@@ -72,16 +73,16 @@ void delete_matrix(Matrix *matrix)
 
    if(matrix != NULL) {
       for(i=0 ; i<matrix->num_rows; i++) {
-         FREE(matrix->values[i]);
+         GI_FREE(matrix->values[i]);
       }
-      FREE(matrix->values);
+      GI_FREE(matrix->values);
    }
    else {
       fprintf(stderr,"\nWarning: tried to delete NULL matrix.\n");
       return;
    }
 
-   FREE(matrix);
+   GI_FREE(matrix);
 
    return;
 
@@ -1401,9 +1402,9 @@ void sprint_matrix(char **str, Matrix *matrix)
    int i,j;
    char *tmp;
    char *tmp2;
-   tmp = MALLOC(sizeof(*tmp) * 64);
+   tmp = GI_MALLOC(sizeof(*tmp) * 64);
 
-   tmp2 = MALLOC(sizeof(*tmp2) * ((matrix->num_rows * matrix->num_columns) *
+   tmp2 = GI_MALLOC(sizeof(*tmp2) * ((matrix->num_rows * matrix->num_columns) *
                                   20 + matrix->num_columns * 10 + 1));
 
    sprintf(tmp2, "\n");
@@ -1418,12 +1419,12 @@ void sprint_matrix(char **str, Matrix *matrix)
 
    strcat(tmp2,"\n");
 
-   *str = MALLOC(sizeof(**str) * (strlen(tmp2) + 1));
+   *str = GI_MALLOC(sizeof(**str) * (strlen(tmp2) + 1));
 
    strcpy(*str, tmp2);
 
-   FREE(tmp);
-   FREE(tmp2);
+   GI_FREE(tmp);
+   GI_FREE(tmp2);
 
    return;
 

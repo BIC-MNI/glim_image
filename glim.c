@@ -9,10 +9,12 @@
 ---------------------------------------------------------------------------- */
 
 #include "glim.h"
+#include "volume_io.h"
 
 extern FILE *tmpfile_list;
 extern char *tmpfile_name;
 extern int num_tmpfiles;
+extern int verbose;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : delete_tmpfiles
@@ -88,7 +90,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
    (*contrast_matrices)->avg_array->num_test = 0;
 
    if(contrast_list->num_avg > 0) {
-      (*contrast_matrices)->avg_array->avg_info = MALLOC(sizeof(Avg_Info*) *
+      (*contrast_matrices)->avg_array->avg_info = GI_MALLOC(sizeof(Avg_Info*) *
                                                       contrast_list->num_avg);
    }
    else
@@ -101,7 +103,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
       cur_raw = contrast_list->contrast_array[ifile];
    
       if(cur_raw->is_avg == FALSE) {
-         cur_matrix = MALLOC(sizeof(Contrast_Matrix));
+         cur_matrix = GI_MALLOC(sizeof(Contrast_Matrix));
 
          cur_matrix->outfile = cur_raw->outfile_name;
 
@@ -130,7 +132,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             exit(EXIT_FAILURE);
          }
 
-         FREE(cur_raw->out_type);
+         GI_FREE(cur_raw->out_type);
 
          if(strcmp(cur_raw->stdev_type,"voxel") == 0)
             cur_matrix->stdev_mode = VOXEL_SD;
@@ -150,7 +152,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             cur_matrix->stdev_mode = VOXEL_SD;
          }
 
-         FREE(cur_raw->stdev_type);
+         GI_FREE(cur_raw->stdev_type);
 
          if ((cur_matrix->stdev_mode == POOLED_SD) && 
              (cur_matrix->out_mode == STDEV_BETA)) {
@@ -165,7 +167,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             fprintf(tmpfile_list, "%s\n", tmp_name);
             num_tmpfiles++;
             tmp_len = strlen(tmp_name);
-            cur_matrix->tmpfile = MALLOC(sizeof(char) * (tmp_len + 1));
+            cur_matrix->tmpfile = GI_MALLOC(sizeof(char) * (tmp_len + 1));
             if (strcpy(cur_matrix->tmpfile, tmp_name) == NULL) {
                fprintf(stderr,"\nError in get_contrast_from_raw.\n");
                fprintf(stderr,"Can't copy tmp_name to outfile.\n");
@@ -214,11 +216,11 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
          icont++;
          cur_matrix++; 
 
-         FREE(cur_raw->in_type);
+         GI_FREE(cur_raw->in_type);
 
       }
       else {
-         cur_avg = MALLOC(sizeof(Avg_Info));
+         cur_avg = GI_MALLOC(sizeof(Avg_Info));
 
          cur_avg->outfile = cur_raw->outfile_name;
 
@@ -247,7 +249,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             exit(EXIT_FAILURE);
          }
 
-         FREE(cur_raw->out_type);
+         GI_FREE(cur_raw->out_type);
 
          if(strcmp(cur_raw->stdev_type,"voxel") == 0)
             cur_avg->stdev_mode = VOXEL_SD;
@@ -267,7 +269,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             cur_avg->stdev_mode = VOXEL_SD;
          }
 
-         FREE(cur_raw->stdev_type);
+         GI_FREE(cur_raw->stdev_type);
 
          if ((cur_avg->stdev_mode == POOLED_SD) && 
              (cur_avg->out_mode == STDEV_BETA)) {
@@ -282,7 +284,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
             fprintf(tmpfile_list, "%s\n", tmp_name);
             num_tmpfiles++;
             tmp_len = strlen(tmp_name);
-            cur_avg->tmpfile = MALLOC(sizeof(char) * (tmp_len + 1));
+            cur_avg->tmpfile = GI_MALLOC(sizeof(char) * (tmp_len + 1));
             if (strcpy(cur_avg->tmpfile, tmp_name) == NULL) {
                fprintf(stderr,"\nError in get_contrast_from_raw.\n");
                fprintf(stderr,"Can't copy tmp_name to outfile.\n");
@@ -301,7 +303,7 @@ int get_contrast_from_raw( Contrast_Raw_Array *contrast_list,
 
    /* Get the mapping of all the contrasts that are test-statistics */
       
-   (*contrast_matrices)->test_map = MALLOC((*contrast_matrices)->num_test
+   (*contrast_matrices)->test_map = GI_MALLOC((*contrast_matrices)->num_test
                                            * sizeof(int));
    itest = 0;
 
@@ -443,10 +445,10 @@ int get_contrast_from_file(char *contrast_filename, int num_columns,
       return FALSE;
    }
 
-   values = MALLOC(sizeof(double *) * initial_rows);
+   values = GI_MALLOC(sizeof(double *) * initial_rows);
 
    for(i=0; i<initial_rows; i++) 
-      values[i] = MALLOC(sizeof(double) * num_columns);
+      values[i] = GI_MALLOC(sizeof(double) * num_columns);
       
    i = 0;
    num_rows = 0;
@@ -467,9 +469,9 @@ int get_contrast_from_file(char *contrast_filename, int num_columns,
       
       if(num_rows == (initial_rows - 1)) {
          initial_rows = initial_rows + 50;
-         REALLOC(values, sizeof(double *) * initial_rows);
+         GI_REALLOC(values, sizeof(double *) * initial_rows);
          for(k=num_rows; k<initial_rows; k++) {
-            values[k] = MALLOC(sizeof(double) * num_columns); 
+            values[k] = GI_MALLOC(sizeof(double) * num_columns); 
          }
       }
    }
@@ -537,11 +539,11 @@ int get_double_list(char *double_string, Double_Array **double_array)
          num_alloc += 20;
          if (double_list == NULL) {
             double_list = 
-               MALLOC(num_alloc * sizeof(*double_list));
+               GI_MALLOC(num_alloc * sizeof(*double_list));
          }
          else {
             double_list = 
-               REALLOC(double_list, num_alloc * sizeof(*double_list));
+               GI_REALLOC(double_list, num_alloc * sizeof(*double_list));
          }
       }
       double_list[num_elements-1] = dvalue;
@@ -555,14 +557,14 @@ int get_double_list(char *double_string, Double_Array **double_array)
    }
 
    if((*double_array) == NULL) {
-      (*double_array) = MALLOC(sizeof(Double_Array *));
-      (*double_array)->values = MALLOC(sizeof(double) * num_elements);
+      (*double_array) = GI_MALLOC(sizeof(Double_Array *));
+      (*double_array)->values = GI_MALLOC(sizeof(double) * num_elements);
    }
 
    /* Update the global variables */
    (*double_array)->num_values = num_elements;
    if ((*double_array)->values != NULL) {
-      FREE((*double_array)->values);
+      GI_FREE((*double_array)->values);
    }
    (*double_array)->values = double_list;
 
@@ -976,7 +978,7 @@ void create_contrast(Glm_Object *glm_obj)
    
    need_tmp_con = 0;
 
-   glm_obj->tmp_con = MALLOC(sizeof(Matrix **) *
+   glm_obj->tmp_con = GI_MALLOC(sizeof(Matrix **) *
                              glm_obj->contrast->num_contrasts);
   
    for(icont=0; icont < glm_obj->contrast->num_contrasts; icont++) { 
@@ -988,7 +990,7 @@ void create_contrast(Glm_Object *glm_obj)
 
       if(cur_contrast->contrast_matrix != NULL) {
          need_tmp_con++;
-         glm_obj->tmp_con[icont] = MALLOC(sizeof(Matrix *) * 6);
+         glm_obj->tmp_con[icont] = GI_MALLOC(sizeof(Matrix *) * 6);
          num_rows = cur_contrast->contrast_matrix->num_rows;
 
          glm_obj->tmp_con[icont][0]=create_matrix(num_rows,
@@ -1008,7 +1010,7 @@ void create_contrast(Glm_Object *glm_obj)
    }
 
    if(need_tmp_con <= 0)  {    /* if no contrast matrices are being used */ 
-      FREE(glm_obj->tmp_con);  /* we don't need these temp matrices      */
+      GI_FREE(glm_obj->tmp_con);  /* we don't need these temp matrices      */
       glm_obj->tmp_con = NULL;
    }
 
@@ -1032,190 +1034,128 @@ void create_contrast(Glm_Object *glm_obj)
 @CREATED    : June 22, 1997 (J. Taylor)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-int get_design_matrix(char *design_filename, char ***infiles, 
-                      Matrix **design_matrix, char *path, int num_response,
+int get_design_matrix(char *design_filename, char ***infiles,
+                      Matrix ** design_matrix, char *path, int num_response,
                       int max_num_row, int max_num_col)
 {
-   FILE *design_file = NULL;
-   int num_columns;
-   int num_rows;
-   char *tmp_string;
-   int i, j;
-   double **values;
-   double *first_row;
-   int path_len = 0;
-   int is_end = FALSE;
-   int is_more;
-   int length = 0;
+   FILE    *design_file;
+   int      num_columns, num_rows;
+   int      i, j;
+   int      prev_j;
+   int      path_len;
+   double   tmp_values[max_num_row][max_num_col];
 
-   if (design_filename != NULL) {
-      design_file = fopen(design_filename, "r");
+   STRING   filename, fullname, tmp;
+   char     tmpc;
+   double   value;
+   int      done;
 
-      if(design_file == NULL) {
-         fprintf(stderr,"\nError opening design filename %s.\n", design_filename);
-         delete_tmpfiles(&tmpfile_list);
-         exit(EXIT_FAILURE);
-      }
-   }
-   else
-      design_file = stdin;
-
-   if(path != NULL) {
-      path_len = strlen(path);
-   }
-   else
-      path_len = 0;
-
-   tmp_string = MALLOC(sizeof(char) * 10000);
-
-   *infiles = MALLOC(sizeof(char *) * (max_num_row + 2));
-
-   first_row = MALLOC(sizeof(double *) * max_num_col);
-
-   /* Get first row and num_columns */
-
-   i=0;
-   num_columns = 0;
-
-   fscanf(design_file, "%s", tmp_string);
-   length = strlen(tmp_string);
-
-   (*infiles)[i] = MALLOC(sizeof(char) * (length + path_len + 1));
-
-   if(path != NULL) {
-      if(strcpy((*infiles)[0], path) == NULL) {
-         fprintf(stderr,"\nError copying path into infiles.\n");
-         delete_tmpfiles(&tmpfile_list);
-         exit(EXIT_FAILURE);
-      }
-
-      if(strcat((*infiles)[0], tmp_string) == NULL) {
-         fprintf(stderr,"\nError concatenating tmp_string to infiles.\n");
-         delete_tmpfiles(&tmpfile_list);
-         exit(EXIT_FAILURE);
-      }
-   }
-   else {
-      if(strcpy((*infiles)[0], tmp_string) == NULL) {
-         fprintf(stderr,"\nError getting name of infile %d in %s.", i+1,
-                 design_filename);
-         delete_tmpfiles(&tmpfile_list);
-         exit(EXIT_FAILURE);
-      }
+   /* open the design file */
+   design_file = (design_filename == NULL) ? stdin : fopen(design_filename, "r");
+   if(design_file == NULL) {
+      fprintf(stderr, "\nError opening design filename %s.\n\n", design_filename);
+      delete_tmpfiles(&tmpfile_list);
+      return (EXIT_FAILURE);
    }
 
-   while(fscanf(design_file, "%lf", &(first_row[i])) == 1) {
-      i++;
-      num_columns++;
-      if(num_columns > max_num_col) {
-         fprintf(stderr,"\nError: num_columns of design matrix greater than max_num_col. max_num_col: %d, num_columns: %d.\n", max_num_col, num_columns);
-         delete_tmpfiles(&tmpfile_list);
-         exit(EXIT_FAILURE);
-      }
+   /* get path length */
+   path_len = (path == NULL) ? 0 : strlen(path);
+   
+   /* allocate memory */
+   *infiles = GI_MALLOC(sizeof(char *) * (max_num_row + 2));
+   filename = alloc_string(4096); 
+   fullname = alloc_string(4096);
+
+   if(verbose) {
+      fprintf(stderr, "Reading Design file [%s]:", design_filename);
    }
+   
+   /* for each line of the input file... */
+   i = 0;
+   prev_j = -1;
+   while(mni_input_string(design_file, &filename, (char)' ', (char)0) == OK) {
 
-
-   values = MALLOC(sizeof(double *) * max_num_row);
-
-   values[0] = MALLOC(sizeof(double) * num_columns);
+      /* allocate some space for the filename */
+      (*infiles)[i] = GI_MALLOC(sizeof(char) * (strlen(filename) + path_len + 1));
       
-   for(i=0; i<num_columns; i++)
-      values[0][i] = first_row[i];
-
-   FREE(first_row);
-
-   i = 1;
-   num_rows = 1;
-
-   while(is_end == FALSE) {
-
-      is_more = fscanf(design_file,"%s",tmp_string);
-
-      if(strcmp(tmp_string,"#") == 0) {
-         fscanf(design_file, "%s", tmp_string);
-         is_more = fscanf(design_file, "%s", tmp_string);
-      }
-
-      if(is_more <= 0)
-         is_end = TRUE;
-
-      if (design_file == stdin) 
-         if((strcmp(tmp_string,"end") == 0) || (strcmp(tmp_string,"END") == 0))
-            is_end = TRUE;
-
-      length = strlen(tmp_string);
-
-      (*infiles)[i] = MALLOC(sizeof(char) *
-                             (length + path_len + 1));
-      
-      if(is_end == FALSE) {
-
-         values[i] = MALLOC(sizeof(double) * num_columns);
-
-         if(path != NULL) {
-            if(strcpy((*infiles)[i], path) == NULL) {
-               fprintf(stderr,"\nError copying path into infiles.\n");
-               delete_tmpfiles(&tmpfile_list);
-               exit(EXIT_FAILURE);
-            }
-            
-            if(strcat((*infiles)[i], tmp_string) == NULL) {
-               fprintf(stderr,
-                       "\nError concatenating tmp_string to infiles.\n");
-               delete_tmpfiles(&tmpfile_list);
-               exit(EXIT_FAILURE);
-            }
-         }
-         else {
-            if(strcpy((*infiles)[i], tmp_string) == NULL) {
-               fprintf(stderr,"\nError getting name of infile %d in %s.",
-                       i+1, design_filename);
-               delete_tmpfiles(&tmpfile_list);
-               exit(EXIT_FAILURE);
-            }
-         }
-
-         j=0;
-         while(fscanf(design_file, "%lf", &(values[i][j])) == 1) {
-            j++;
-         }
-
-         if(j != num_columns) {
-            fprintf(stderr,"\nError: mismatched number of entries in line %d of %s.\n", i, design_filename);
-            return FALSE;
-         }
+      /* add in the path if required */
+      if(path != NULL){
          
-         i++;
-         num_rows++;
-      
-         if (num_rows > max_num_row ) {
-            fprintf(stderr,"\nError: num_rows of design_matrix greater than max_num_row. max_num_row: %d, num_rows: %d.\n", max_num_row, num_rows);
+         fullname = concat_strings(path, filename);
+         
+         /* switch pointers about */
+         tmp = filename;
+         filename = fullname;
+         fullname = tmp;
+      }
+         
+      if(strcpy((*infiles)[i], filename) == NULL) {
+         fprintf(stderr, "\nError getting name of infile %d in %s.",
+                 i + 1, design_filename);
+         delete_tmpfiles(&tmpfile_list);
+         exit(EXIT_FAILURE);
+      }
+
+      /* now get the values */
+      j = 0;
+      done = FALSE;
+      while(!done) {
+
+         /* get the value */
+         input_double(design_file, &value);
+         tmp_values[i][j] = value;
+
+         /* check if we are done */
+         input_character(design_file, &tmpc);
+         done = (tmpc == '\n');
+         unget_character(design_file, tmpc);
+
+         j++;
+         if(j > max_num_col) {
+            fprintf(stderr,
+                    "\nError: more columns in design_matrix [%d] than -max_num_col [%d]\n",
+                    i, max_num_row);
             delete_tmpfiles(&tmpfile_list);
             exit(EXIT_FAILURE);
          }
       }
-   }
 
+      /* check number of values */
+      if((prev_j != -1) && (j != prev_j)) {
+         fprintf(stderr, "\nError: mismatched number of entries on line [%d]\n", i);
+         delete_tmpfiles(&tmpfile_list);
+         exit(EXIT_FAILURE);
+      }
+      prev_j = j;
+
+      i++;
+      if(i > max_num_row) {
+         fprintf(stderr,
+                 "\nError: more rows in design_matrix [%d] than -max_num_row [%d]\n", i,
+                 max_num_row);
+         delete_tmpfiles(&tmpfile_list);
+         exit(EXIT_FAILURE);
+      }
+   }
+   num_rows = i;
+   num_columns = j;
+   
+   /* populate the design matrix */
    *design_matrix = create_matrix(num_rows, num_columns);
-      
-   for(i=0; i<num_rows; i++) {
-      for(j=0; j<num_columns; j++) {
-         (*design_matrix)->values[i][j] = values[i][j];
+   for(i = 0; i < num_rows; i++) {
+      for(j = 0; j < num_columns; j++) {
+         (*design_matrix)->values[i][j] = tmp_values[i][j];
       }
    }
 
-   /* free up values and tmp_string*/
-
-   for(i=0; i<num_rows; i++) {
-      FREE(values[i]);
-   } 
-   FREE(values);  
-   FREE(tmp_string);
-
+   /* clean up */
    fclose(design_file);
-
+   delete_string(filename);
+   delete_string(fullname);
+   
    return TRUE;
 }
+
 
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -2624,10 +2564,10 @@ void create_family_names(char ***family_names, char ***link_names,
    int num_link = 8;
    int num_variance_function = 5;
 
-   *family_names = MALLOC(sizeof(char *) * num_family);
-   *link_names = MALLOC(sizeof(char *) * num_link);
-   *variance_function_names = MALLOC(sizeof(char *) * num_variance_function);
-   *corr_struct_names = MALLOC(sizeof(char *) * num_corr_struct);
+   *family_names = GI_MALLOC(sizeof(char *) * num_family);
+   *link_names = GI_MALLOC(sizeof(char *) * num_link);
+   *variance_function_names = GI_MALLOC(sizeof(char *) * num_variance_function);
+   *corr_struct_names = GI_MALLOC(sizeof(char *) * num_corr_struct);
 
    (*family_names)[GAUSSIAN] = gauss;
    (*family_names)[GAMMA] = gamma;

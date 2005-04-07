@@ -12,6 +12,7 @@ extern *tmpfile_list;
 extern *tmpfile_name;
 
 #include "smoothness.h"
+#include "glim.h"
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_lambda_buffer
@@ -46,7 +47,7 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
       cube over which the derivative will be calculated will be stored for
       each point */
 
-   lambda_buffer = MALLOC(sizeof(*lambda_buffer));
+   lambda_buffer = GI_MALLOC(sizeof(*lambda_buffer));
 
    if(lambda_buffer == NULL) {
       fprintf(stderr,"\nError allocating buffers for smoothness calculation.\n");
@@ -66,7 +67,7 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
    /* The array check contains the look up points for both checking whether
       all points are in the mask and the values themselves used to calculate */
 
-   element_sizes = MALLOC(sizeof(*element_sizes) * num_dim);
+   element_sizes = GI_MALLOC(sizeof(*element_sizes) * num_dim);
    if(element_sizes == NULL) {
       fprintf(stderr,"\nError allocating element_sizes for smoothness calculation.\n");
       return NULL;
@@ -83,14 +84,14 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
    lambda_buffer->element_sizes = element_sizes;
    lambda_buffer->ring_size = 0;
 
-   coord = MALLOC(sizeof(*coord) * num_dim);
+   coord = GI_MALLOC(sizeof(*coord) * num_dim);
    if(coord == NULL) {
       fprintf(stderr,"\nError allocating coord for smoothness calculation.\n");
       return NULL;
    } 
    lambda_buffer->coord = coord;
 
-   coord_tmp = MALLOC(sizeof(*coord_tmp) * num_dim);
+   coord_tmp = GI_MALLOC(sizeof(*coord_tmp) * num_dim);
 
    for(i=0; i<lambda_buffer->num_dim; i++) {
       coord_tmp[i] = 0;
@@ -102,10 +103,10 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
    lambda_buffer->ring_size += 1;
    lambda_buffer->current = lambda_buffer->ring_size - 1;
 
-   lambda_buffer->check = MALLOC(sizeof(*lambda_buffer->check) * 
+   lambda_buffer->check = GI_MALLOC(sizeof(*lambda_buffer->check) * 
                                  lambda_buffer->num_check);
 
-   lambda_buffer->index = MALLOC(sizeof(*lambda_buffer->index) * 
+   lambda_buffer->index = GI_MALLOC(sizeof(*lambda_buffer->index) * 
                                  lambda_buffer->num_check);
 
    for(i=0; i<lambda_buffer->num_check; i++) {
@@ -120,16 +121,16 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
          }
       }
    }
-   FREE(coord_tmp);
+   GI_FREE(coord_tmp);
    lambda_buffer->current = -1;
 
-   step = MALLOC(sizeof(*step) * num_dim);
+   step = GI_MALLOC(sizeof(*step) * num_dim);
    if(step == NULL) {
       fprintf(stderr,"\nError allocating step for smoothness calculation.\n");
       return NULL;
    } 
 
-   test = MALLOC(sizeof(*test) * lambda_buffer->ring_size);
+   test = GI_MALLOC(sizeof(*test) * lambda_buffer->ring_size);
 
    lambda_buffer->sizes = sizes;
    lambda_buffer->coord = coord;
@@ -150,7 +151,7 @@ Lambda *create_lambda_buffer(int num_buffers, int num_test,
                                                               TRUE);
       else {
          lambda_buffer->fwhm_gaussian = NULL;
-         lambda_buffer->fwhm_general = MALLOC(sizeof(*lambda_buffer->fwhm_general) * (lambda_buffer->num_test));
+         lambda_buffer->fwhm_general = GI_MALLOC(sizeof(*lambda_buffer->fwhm_general) * (lambda_buffer->num_test));
          for(i=0; i<lambda_buffer->num_test; i++) {
             lambda_buffer->fwhm_general[i]=create_general_buffer(lambda_buffer,
                                                                  FALSE);
@@ -290,7 +291,7 @@ Fwhm_Info *create_general_buffer(Lambda *lambda_buffer, int is_gaussian)
    int ibuff, i;
    Fwhm_Info *fwhm_info;
 
-   fwhm_info = MALLOC(sizeof(*fwhm_info));
+   fwhm_info = GI_MALLOC(sizeof(*fwhm_info));
 
    fwhm_info->lambda = create_matrix(lambda_buffer->num_dim,
                                          lambda_buffer->num_dim);
@@ -310,20 +311,20 @@ Fwhm_Info *create_general_buffer(Lambda *lambda_buffer, int is_gaussian)
       return NULL;
    }
 
-   fwhm_info->deriv = MALLOC(sizeof(*fwhm_info->deriv) * 
+   fwhm_info->deriv = GI_MALLOC(sizeof(*fwhm_info->deriv) * 
                                  lambda_buffer->num_dim);
    if(fwhm_info->deriv == NULL) {
       fprintf(stderr,"\nError allocating deriv in create_general_buffer.\n");
       return NULL;
    }
 
-   fwhm_info->data = MALLOC(sizeof(double) * 
+   fwhm_info->data = GI_MALLOC(sizeof(double) * 
                                  (lambda_buffer->num_buffers));
 
    fwhm_info->ring_size = lambda_buffer->ring_size;
 
    for(ibuff=0; ibuff<lambda_buffer->num_buffers; ibuff++) {
-      fwhm_info->data[ibuff] = MALLOC(sizeof(**(fwhm_info->data)) *
+      fwhm_info->data[ibuff] = GI_MALLOC(sizeof(**(fwhm_info->data)) *
                                            fwhm_info->ring_size);
       if(fwhm_info->data[ibuff] == NULL) {
          fprintf(stderr,"\nError allocating data in create_general_buffer. ibuff: %d\n", ibuff);
@@ -350,50 +351,50 @@ int delete_lambda_buffer(Lambda *lambda_buffer)
    int ibuff, itest;
    Fwhm_Info *fwhm_general;
 
-   FREE(lambda_buffer->sizes);
-   FREE(lambda_buffer->coord);
-   FREE(lambda_buffer->step);
-   FREE(lambda_buffer->test);
+   GI_FREE(lambda_buffer->sizes);
+   GI_FREE(lambda_buffer->coord);
+   GI_FREE(lambda_buffer->step);
+   GI_FREE(lambda_buffer->test);
 
    if(lambda_buffer->is_gaussian == FALSE) {
       for(itest=0; itest<lambda_buffer->num_test; itest++) {
          fwhm_general = lambda_buffer->fwhm_general[itest];
 
          for(ibuff=0; ibuff<lambda_buffer->num_buffers; ibuff++) {
-            FREE(fwhm_general->data[ibuff]);
+            GI_FREE(fwhm_general->data[ibuff]);
          }
-         FREE(fwhm_general->data);
+         GI_FREE(fwhm_general->data);
 
          delete_matrix(fwhm_general->lambda);
-         FREE(fwhm_general->deriv);
+         GI_FREE(fwhm_general->deriv);
       }
       if (lambda_buffer->fwhm_simple != NULL) {
-         FREE(lambda_buffer->fwhm_simple->deriv);
+         GI_FREE(lambda_buffer->fwhm_simple->deriv);
 
          for(ibuff=0; ibuff<lambda_buffer->num_buffers; ibuff++) {
-            FREE(lambda_buffer->fwhm_simple->data[ibuff]);
+            GI_FREE(lambda_buffer->fwhm_simple->data[ibuff]);
          }
-         FREE(lambda_buffer->fwhm_simple->data);
+         GI_FREE(lambda_buffer->fwhm_simple->data);
          delete_matrix(lambda_buffer->fwhm_simple->lambda);
       }
    }
    else if (lambda_buffer->fwhm_gaussian != NULL) {
-      FREE(lambda_buffer->fwhm_gaussian->deriv);
+      GI_FREE(lambda_buffer->fwhm_gaussian->deriv);
 
       for(ibuff=0; ibuff<lambda_buffer->num_buffers; ibuff++) {
-         FREE(lambda_buffer->fwhm_gaussian->data[ibuff]);
+         GI_FREE(lambda_buffer->fwhm_gaussian->data[ibuff]);
       }
-      FREE(lambda_buffer->fwhm_gaussian->data);
+      GI_FREE(lambda_buffer->fwhm_gaussian->data);
       delete_matrix(lambda_buffer->fwhm_gaussian->lambda);
    }
 
    if(lambda_buffer->is_avg == TRUE) {
-      FREE(lambda_buffer->fwhm_avg->deriv);
+      GI_FREE(lambda_buffer->fwhm_avg->deriv);
 
       for(ibuff=0; ibuff<lambda_buffer->num_buffers; ibuff++) {
-         FREE(lambda_buffer->fwhm_avg->data[ibuff]);
+         GI_FREE(lambda_buffer->fwhm_avg->data[ibuff]);
       }
-      FREE(lambda_buffer->fwhm_avg->data);
+      GI_FREE(lambda_buffer->fwhm_avg->data);
       delete_matrix(lambda_buffer->fwhm_avg->lambda);
    }
 

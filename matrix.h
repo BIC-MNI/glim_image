@@ -8,6 +8,9 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #define COMPILING_MATRIX 
 
 #include <stdio.h>
@@ -16,20 +19,8 @@
 #include <float.h>
 #include <math.h>
 #ifndef lint
-static char matrix_h_rcsid[] = "$Header: /private-cvsroot/statistics/glim_image/matrix.h,v 1.1 1999-10-15 13:59:06 neelin Exp $ MINC (MNI)";
+static char matrix_h_rcsid[] = "$Header: /private-cvsroot/statistics/glim_image/matrix.h,v 1.2 2005-04-07 07:38:21 rotor Exp $ MINC (MNI)";
 #endif
-
-#ifndef FALSE
-#  define FALSE 0
-#endif
-#ifndef TRUE
-#  define TRUE 1
-#endif
-
-#define MALLOC(size) ((void *) malloc(size))
-#define FREE(ptr) free(ptr)
-#define REALLOC(ptr, size) ((void *) realloc(ptr, size))
-#define CALLOC(nelem, elsize) ((void *) calloc(nelem, elsize))
 
 #ifndef INVALID_DATA
    #define INVALID_DATA (-DBL_MAX)
@@ -81,3 +72,5 @@ double determinant(Matrix *matrix);
 
 void svd_matrix(Matrix **singval, Matrix **buffer, 
           Matrix *matrix, int free_all);
+
+#endif

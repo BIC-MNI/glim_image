@@ -7,6 +7,10 @@
 @CREATED    : Sept 11, 1997 (J. Taylor)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
+
+#ifndef GLIM_H
+#define GLIM_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +29,19 @@
 
 #define ROW_SEPARATOR ';'
 #define ENTRY_SEPARATOR ','
+
+#ifndef FALSE
+#  define FALSE 0
+#endif
+#ifndef TRUE
+#  define TRUE 1
+#endif
+
+#define GI_MALLOC(size) ((void *) malloc(size))
+#define GI_FREE(ptr) free(ptr)
+#define GI_REALLOC(ptr, size) ((void *) realloc(ptr, size))
+#define GI_CALLOC(nelem, elsize) ((void *) calloc(nelem, elsize))
+
 
 /* Define families, link and variance functions as integers help compare */
 
@@ -293,3 +310,5 @@ Variance_Function get_variance_function(char *variance_function_str,
 
 Corr_Struct get_corr_struct(char *corr_struct_str, 
                            char **corr_struct_names);
+
+#endif

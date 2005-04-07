@@ -8,28 +8,8 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#ifndef public
-   #define public
-#endif
-#ifndef private
-   #define private static
-#endif
-
 #ifndef INVALID_DATA
    #define INVALID_DATA (-DBL_MAX)
-#endif
-
-#ifndef FREE
-   #define FREE(ptr) free(ptr)
-#endif
-#ifndef MALLOC
-   #define MALLOC(size) ((void *) malloc(size))
-#endif
-#ifndef REALLOC
-   #define REALLOC(ptr, size) ((void *) realloc(ptr, size))
-#endif
-#ifndef CALLOC
-   #define CALLOC(nelem, elsize) ((void *) calloc(nelem, elsize))
 #endif
 
 #include <stdio.h>

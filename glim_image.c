@@ -21,18 +21,6 @@
 #include "glim.h"
 #include "smoothness.h"
 
-#ifndef FALSE
-#  define FALSE 0
-#endif
-#ifndef TRUE
-#  define TRUE 1
-#endif
-
-#define MALLOC(size) ((void *) malloc(size))
-#define FREE(ptr) free(ptr)
-#define REALLOC(ptr, size) ((void *) realloc(ptr, size))
-#define CALLOC(nelem, elsize) ((void *) calloc(nelem, elsize))
-
 #define BOOLEAN_DEFAULT (-1)
 #define INVALID_DATA (-DBL_MAX)
 
@@ -344,18 +332,17 @@ int main(int argc, char *argv[])
       path_len = strlen(path_tmp);
 
       if(path_tmp[path_len-1] != path_end[0]) {
-         path_in = MALLOC(sizeof(char) * (path_len + 2));
+         path_in = GI_MALLOC(sizeof(char) * (path_len + 2));
          strcpy(path_in, path_tmp);
          strcat(path_in, path_end);
       }
    }
 
    /* Get design matrix from file design_filename */
-
    design_filename = argv[1];
-
-   if( strcmp(design_filename,"-") == 0)
+   if( strcmp(design_filename,"-") == 0){
       design_filename = NULL;
+      }
 
    if(get_design_matrix(design_filename, &input_files, &design_matrix,
                              path_in, num_response, max_num_row,
@@ -364,15 +351,27 @@ int main(int argc, char *argv[])
       delete_tmpfiles(&tmpfile_list);
       exit(EXIT_FAILURE);
    }
-
-   contrast_matrices = MALLOC(sizeof(Contrast_Mat_Array));
+   
+   /* a bit of output */
+   if(verbose){
+      fprintf(stdout, "+++ design matrix from %s +++\n", design_filename);   
+      for(i=0; i<design_matrix->num_rows; i++) {
+         fprintf(stdout, " | [%s] - ", input_files[i]);   
+         for(j=0; j<design_matrix->num_columns; j++) {
+         fprintf(stdout, "%5g ", design_matrix->values[i][j]);
+         }
+         fprintf(stdout, "\n");
+      }
+   }
+   
+   contrast_matrices = GI_MALLOC(sizeof(Contrast_Mat_Array));
    contrast_matrices->num_columns = design_matrix->num_columns;
    contrast_matrices->num_contrasts = (contrast_raw_list.num_output - 
                                        contrast_raw_list.num_avg);
    contrast_matrices->num_avg = contrast_raw_list.num_avg;
    contrast_matrices->contrast_matrix_array =\
-      MALLOC(contrast_matrices->num_contrasts * sizeof(Matrix *));
-   contrast_matrices->avg_array = MALLOC(sizeof(Avg_Array));
+      GI_MALLOC(contrast_matrices->num_contrasts * sizeof(Matrix *));
+   contrast_matrices->avg_array = GI_MALLOC(sizeof(Avg_Array));
 
    get_contrast_from_raw(&contrast_raw_list, &contrast_matrices);
    
@@ -459,7 +458,7 @@ int main(int argc, char *argv[])
 
       cancel_volume_input(tmp_volume, &volume_input);
 
-      sizes = MALLOC(sizeof(*sizes) * num_dim);
+      sizes = GI_MALLOC(sizeof(*sizes) * num_dim);
 
       for(i=0; i<num_dim; i++) {
          sizes[i] = volume_sizes[i];
@@ -495,7 +494,7 @@ int main(int argc, char *argv[])
 
    }
 
-   initial_data = MALLOC(sizeof(*initial_data));
+   initial_data = GI_MALLOC(sizeof(*initial_data));
 
    initial_data->design_matrix = design_matrix;
    initial_data->contrast = contrast_matrices;
@@ -506,7 +505,7 @@ int main(int argc, char *argv[])
 
    /* Get control parameters */
 
-   initial_data->control = MALLOC(sizeof(Glm_Control));
+   initial_data->control = GI_MALLOC(sizeof(Glm_Control));
 
    if(pool_mask != NULL)
       initial_data->control->pool_id = TRUE;
@@ -583,10 +582,10 @@ int main(int argc, char *argv[])
    else
       initial_data->control->do_fit = TRUE;
 
-   glm_obj = MALLOC(sizeof(Glm_Object));
+   glm_obj = GI_MALLOC(sizeof(Glm_Object));
    initialize_glm(glm_obj, initial_data);
 
-   program_data = MALLOC(sizeof(*program_data));
+   program_data = GI_MALLOC(sizeof(*program_data));
    
    if (lambda_buffer != NULL) {
 
@@ -795,7 +794,7 @@ int main(int argc, char *argv[])
       exit(EXIT_FAILURE);
    }
          
-   output_files = MALLOC(num_output_files * sizeof(*output_files));
+   output_files = GI_MALLOC(num_output_files * sizeof(*output_files));
 
    for(i=0; i<glm_obj->contrast->num_contrasts; i++) {
 
@@ -967,7 +966,7 @@ int main(int argc, char *argv[])
       }
    }
 
-   program_data = MALLOC(sizeof(*program_data));
+   program_data = GI_MALLOC(sizeof(*program_data));
    
    program_data->glm_obj = glm_obj;
    program_data->lambda_buffer = lambda_buffer;
@@ -1008,7 +1007,7 @@ int main(int argc, char *argv[])
       set_loop_buffer_size(loop_options, (long) 1024 * max_buffer_size_in_kb);
       set_loop_check_dim_info(loop_options, check_dim_info);
 
-      infiles_pool = MALLOC(sizeof(char*) *\
+      infiles_pool = GI_MALLOC(sizeof(char*) *\
                             (1 + ((glm_obj->control->count_id > 0) ||
                                   (glm_obj->control->deg_free_id > 0))));
 
@@ -2045,31 +2044,31 @@ int get_f_stat_raw(char *dst, char *key, int argc, char **argv)
    
    /* Get raw contrast */
    
-   contrast = MALLOC(sizeof(Contrast_Raw));
+   contrast = GI_MALLOC(sizeof(Contrast_Raw));
 
    length = strlen(argv[0]);
-   contrast->outfile_name = MALLOC(sizeof(char) * (length + 1));
+   contrast->outfile_name = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->outfile_name, argv[0]) == NULL) {
       fprintf(stderr,"\nError copying outfile name for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[1]);
-   contrast->stdev_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->stdev_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->stdev_type, argv[1]) == NULL) {
       fprintf(stderr,"\nError copying in_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[2]);
-   contrast->in_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->in_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->in_type, argv[2]) == NULL) {
       fprintf(stderr,"\nError copying in_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[3]);
-   contrast->raw_contrast = MALLOC(sizeof(char) * (length + 1));
+   contrast->raw_contrast = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->raw_contrast, argv[3]) == NULL) {
       fprintf(stderr,"\nError copying raw contrast for outfile %s\n", argv[0]);
       return FALSE;
@@ -2081,7 +2080,7 @@ int get_f_stat_raw(char *dst, char *key, int argc, char **argv)
    /* Set up or reallocate memory for contrast_list */
 
    if(contrast_list->contrast_array == NULL) {
-      contrast_list->contrast_array = MALLOC((MAX_NUM_CONTRASTS 
+      contrast_list->contrast_array = GI_MALLOC((MAX_NUM_CONTRASTS 
                                     * sizeof(contrast)));
       contrast_list->num_output = 1;
       contrast_list->num_avg = 0;
@@ -2137,38 +2136,38 @@ int get_t_stat_raw(char *dst, char *key, int argc, char **argv)
    
    /* Get raw contrast */
    
-   contrast = MALLOC(sizeof(Contrast_Raw));
+   contrast = GI_MALLOC(sizeof(Contrast_Raw));
 
    length = strlen(argv[0]);
-   contrast->outfile_name = MALLOC(sizeof(char) * (length + 1));
+   contrast->outfile_name = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->outfile_name, argv[0]) == NULL) {
       fprintf(stderr,"\nError copying outfile name for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[1]);
-   contrast->out_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->out_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->out_type, argv[1]) == NULL) {
       fprintf(stderr,"\nError copying out_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[2]);
-   contrast->stdev_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->stdev_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->stdev_type, argv[2]) == NULL) {
       fprintf(stderr,"\nError copying stdev_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[3]);
-   contrast->in_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->in_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->in_type, argv[3]) == NULL) {
       fprintf(stderr,"\nError copying in_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[4]);
-   contrast->raw_contrast = MALLOC(sizeof(char) * (length + 1));
+   contrast->raw_contrast = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->raw_contrast, argv[4]) == NULL) {
       fprintf(stderr,"\nError copying raw contrast for outfile %s\n", argv[0]);
       return FALSE;
@@ -2179,7 +2178,7 @@ int get_t_stat_raw(char *dst, char *key, int argc, char **argv)
    /* Set up or reallocate memory for contrast_list */
 
    if(contrast_list->contrast_array == NULL) {
-      contrast_list->contrast_array = MALLOC((MAX_NUM_CONTRASTS 
+      contrast_list->contrast_array = GI_MALLOC((MAX_NUM_CONTRASTS 
                                     * sizeof(contrast)));
       contrast_list->num_output = 1;
       contrast_list->num_avg = 0;
@@ -2235,24 +2234,24 @@ int get_avg_raw(char *dst, char *key, int argc, char **argv)
    
    /* Get raw contrast */
    
-   contrast = MALLOC(sizeof(Contrast_Raw));
+   contrast = GI_MALLOC(sizeof(Contrast_Raw));
 
    length = strlen(argv[0]);
-   contrast->outfile_name = MALLOC(sizeof(char) * (length + 1));
+   contrast->outfile_name = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->outfile_name, argv[0]) == NULL) {
       fprintf(stderr,"\nError copying outfile name for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[1]);
-   contrast->out_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->out_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->out_type, argv[1]) == NULL) {
       fprintf(stderr,"\nError copying out_type for outfile %s\n", argv[0]);
       return FALSE;
    }
 
    length = strlen(argv[2]);
-   contrast->stdev_type = MALLOC(sizeof(char) * (length + 1));
+   contrast->stdev_type = GI_MALLOC(sizeof(char) * (length + 1));
    if(strcpy(contrast->stdev_type, argv[2]) == NULL) {
       fprintf(stderr,"\nError copying stdev_type for outfile %s\n", argv[0]);
       return FALSE;
@@ -2264,7 +2263,7 @@ int get_avg_raw(char *dst, char *key, int argc, char **argv)
    /* Set up or reallocate memory for contrast_list */
 
    if(contrast_list->contrast_array == NULL) {
-      contrast_list->contrast_array = MALLOC((MAX_NUM_CONTRASTS 
+      contrast_list->contrast_array = GI_MALLOC((MAX_NUM_CONTRASTS 
                                     * sizeof(contrast)));
       contrast_list->num_output = 1;
       contrast_list->num_avg = 1;
@@ -2449,7 +2448,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
             sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
             (void) miattputstr(mincid, varid, contrast_str, 
                                contr_str); 
-            FREE(contr_str);
+            GI_FREE(contr_str);
          }
          (void) miattputstr(mincid, varid, family_str,
                             glm_obj->family_names[glm_obj->family]);
@@ -2494,7 +2493,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
          sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
          (void) miattputstr(mincid, varid, contrast_str, 
                             contr_str); 
-         FREE(contr_str);
+         GI_FREE(contr_str);
 
 
          (void) miattputstr(mincid, varid, family_str,
@@ -2560,7 +2559,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
             sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
             (void) miattputstr(mincid, varid, contrast_str, 
                                contr_str); 
-            FREE(contr_str);
+            GI_FREE(contr_str);
          }
          (void) miattputstr(mincid, varid, family_str,
                             glm_obj->family_names[glm_obj->family]);
@@ -2583,7 +2582,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
             sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
             (void) miattputstr(mincid, varid, contrast_str, 
                                contr_str); 
-            FREE(contr_str);
+            GI_FREE(contr_str);
          }
          (void) miattputstr(mincid, varid, family_str,
                             glm_obj->family_names[glm_obj->family]);
@@ -2607,7 +2606,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
             sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
             (void) miattputstr(mincid, varid, contrast_str, 
                                contr_str); 
-            FREE(contr_str);
+            GI_FREE(contr_str);
          }
          (void) miattputstr(mincid, varid, family_str,
                             glm_obj->family_names[glm_obj->family]);
@@ -2912,7 +2911,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
                sprint_matrix(&contr_str, cur_matrix->contrast_matrix);
                (void) miattputstr(mincid, varid, contrast_str, 
                                   contr_str); 
-               FREE(contr_str);
+               GI_FREE(contr_str);
             }
 
             (void) miattputstr(mincid, varid, family_str,
@@ -3053,13 +3052,13 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
    }
 
-   FREE(param_str);
+   GI_FREE(param_str);
 
    if (fwhm_matrix_avg_str != NULL)
-      FREE(fwhm_matrix_avg_str);
+      GI_FREE(fwhm_matrix_avg_str);
 
    if (fwhm_matrix_gaussian_str != NULL)
-      FREE(fwhm_matrix_gaussian_str);
+      GI_FREE(fwhm_matrix_gaussian_str);
 
    return;
 
@@ -3093,12 +3092,12 @@ void create_glim_parameters(Glm_Object *glm_obj, char **input_files,
    char *tmpstring;
    char **tmpstring2;
 
-   tmpstring = MALLOC(sizeof(*tmpstring) * 10000);
-   tmpstring2 = MALLOC(sizeof(char *) * glm_obj->design_matrix->num_rows);
+   tmpstring = GI_MALLOC(sizeof(*tmpstring) * 10000);
+   tmpstring2 = GI_MALLOC(sizeof(char *) * glm_obj->design_matrix->num_rows);
    length_tot = 0;
 
    for(i=0; i<glm_obj->design_matrix->num_rows; i++) {
-      tmpstring2[i] = MALLOC(sizeof(char) * (strlen(input_files[i]) + 50
+      tmpstring2[i] = GI_MALLOC(sizeof(char) * (strlen(input_files[i]) + 50
                                     + 15*glm_obj->design_matrix->num_columns +
                                     300));
       sprintf(tmpstring,"Using file: %s. Regressors: ", input_files[i]);
@@ -3111,14 +3110,14 @@ void create_glim_parameters(Glm_Object *glm_obj, char **input_files,
       length_tot += strlen(tmpstring2[i]);
    }
       
-   FREE(tmpstring);
+   GI_FREE(tmpstring);
 
-   *param_str = MALLOC(sizeof(**param_str) * (length_tot + 1));
+   *param_str = GI_MALLOC(sizeof(**param_str) * (length_tot + 1));
    strcpy(*param_str, "\n");
 
    for(i=0; i<glm_obj->design_matrix->num_rows; i++) {
       strcat(*param_str, tmpstring2[i]);
-      FREE(tmpstring2[i]);
+      GI_FREE(tmpstring2[i]);
    }
 
    return;
@@ -3159,7 +3158,7 @@ void get_fwhm_filenames(Lambda *lambda_buffer, Glm_Object *glm_obj)
             for f-stats and p-corr (Feb. 1998)*/
 
          if (glm_obj->control->scylla == FALSE) {
-            fwhm_general->outfile = MALLOC(sizeof(char) * (strlen(cur_matrix->outfile + 20)));
+            fwhm_general->outfile = GI_MALLOC(sizeof(char) * (strlen(cur_matrix->outfile + 20)));
 
             strncpy(fwhm_general->outfile, cur_matrix->outfile, 
                     strlen(cur_matrix->outfile) - 4);
