@@ -1114,7 +1114,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
          if(j > max_num_col) {
             fprintf(stderr,
                     "\nError: more columns in design_matrix [%d] than -max_num_col [%d]\n",
-                    i, max_num_row);
+                    j, max_num_col);
             delete_tmpfiles(&tmpfile_list);
             exit(EXIT_FAILURE);
          }
