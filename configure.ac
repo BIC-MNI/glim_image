@@ -1,7 +1,7 @@
 # Require autoconf 2.57 or newer.
 AC_PREREQ([2.57])
 
-AC_INIT([glim_image],[1.1.1],[Jonathan Taylor])
+AC_INIT([glim_image],[1.2],[Jonathan Taylor])
 AC_CONFIG_SRCDIR([glim_image.c])
 
 AM_INIT_AUTOMAKE
