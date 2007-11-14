@@ -1,3 +1,8 @@
+Version 1.1.2
+
+* fixed some string manipulations that were causing
+  segmentation faults
+
 Version 1.1.1
 
 * Simply repackage the tar ball with good m4 files for minc2
