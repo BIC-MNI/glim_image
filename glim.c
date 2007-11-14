@@ -403,6 +403,8 @@ int get_contrast_from_column(char *contrast_column, int num_columns,
 
    if(column > num_columns) {
       fprintf(stderr,"\nError in get_contrast_from_column: column number too large.\n");
+
+printf( "column = %d  num_columns = %d\n", column, num_columns );
       return FALSE;
    }
 

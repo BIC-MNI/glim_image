@@ -2300,7 +2300,7 @@ int get_avg_raw(char *dst, char *key, int argc, char **argv)
 ---------------------------------------------------------------------------- */
 void create_stat_variable(Program_Data *program_data, char **input_files)
 {
-   char *outfile;
+   char *outfile = NULL;
    int mincid, varid;
    int ifile, itest;
    int icont;
@@ -2329,7 +2329,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
    char *link_str = "link-function";
    char *variance_fun_str = "variance-function";
    char *family_str = "exponential-family";
-   char *param_str, *contr_str;
+   char *param_str = NULL, *contr_str = NULL;
    char *int_lambda_str = "integrated-det-lambda";
    char *search_vol_str = "search-volume";
    char *search_file_str = "search-region-file";
@@ -2337,8 +2337,8 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
    char *int_fwhm_str = "integrated-FWHM-estimate";
    char *fwhm_file_str = "local-FWHM-file";
    char *fwhm_matrix_str = "pooled-lambda-matrix";
-   char *fwhm_matrix_gaussian_str;
-   char *fwhm_matrix_avg_str;
+   char *fwhm_matrix_gaussian_str = NULL;
+   char *fwhm_matrix_avg_str = NULL;
    char *num_fwhm_str = "num-voxel-pool-FWHM";
    glm_obj = program_data->glm_obj;
    lambda_buffer = program_data->lambda_buffer;
@@ -3101,7 +3101,7 @@ void create_glim_parameters(Glm_Object *glm_obj, char **input_files,
                                     + 15*glm_obj->design_matrix->num_columns +
                                     300));
       sprintf(tmpstring,"Using file: %s. Regressors: ", input_files[i]);
-      strcat(tmpstring2[i], tmpstring);
+      strcpy(tmpstring2[i], tmpstring);
       for(j=0; j<glm_obj->design_matrix->num_columns; j++) {
          sprintf(tmpstring, "%5.2e  ",glm_obj->design_matrix->values[i][j]);
          strcat(tmpstring2[i], tmpstring);
