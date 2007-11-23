@@ -1,3 +1,6 @@
+2007-11-23  Claude Lepage <claude@bic.mni.mcgill.ca>
+	* extend to minc2
+
 2007-11-13  Claude Lepage <claude@bic.mni.mcgill.ca>
 	* fixed some string manipulations that were causing 
           segmentation faults

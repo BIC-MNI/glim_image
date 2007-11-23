@@ -1,7 +1,8 @@
-Version 1.2
+Version 1.1.2
 
 * fixed some string manipulations that were causing
   segmentation faults
+* extension to minc2
 
 Version 1.1.1
 

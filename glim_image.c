@@ -9,6 +9,10 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2385,7 +2389,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
       
       outfile = glm_obj->contrast->contrast_matrix_array[ifile]->outfile;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -2623,7 +2627,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
    }
@@ -2632,7 +2636,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
       
       outfile = glm_obj->contrast->avg_array->avg_info[ifile]->outfile;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -2791,7 +2795,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
    }
@@ -2800,7 +2804,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       outfile = glm_obj->deviance_file;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -2820,7 +2824,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
    }
@@ -2829,7 +2833,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       outfile = glm_obj->scale_file;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -2849,7 +2853,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
    }
@@ -2859,7 +2863,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       outfile = glm_obj->contrast->avg_array->deviance_file;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -2879,7 +2883,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
    }
@@ -2892,7 +2896,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
             cur_matrix = glm_obj->contrast->contrast_matrix_array[itest];
             outfile = fwhm_general->outfile;
             fprintf(stderr,"\nUpdating %s's header.",outfile);
-            mincid = ncopen(outfile, NC_WRITE);
+            mincid = miopen(outfile, NC_WRITE);
 
             (void) ncredef(mincid);
 
@@ -2923,7 +2927,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
             ncendef(mincid);
 
-            ncclose(mincid);
+            miclose(mincid);
 
             fprintf(stderr," Done.\n");
           }
@@ -2934,7 +2938,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
              fwhm_general = lambda_buffer->fwhm_gaussian;
              outfile = fwhm_general->outfile;
              fprintf(stderr,"\nUpdating %s's header.",outfile);
-             mincid = ncopen(outfile, NC_WRITE);
+             mincid = miopen(outfile, NC_WRITE);
 
              (void) ncredef(mincid);
 
@@ -2954,7 +2958,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
              ncendef(mincid);
 
-             ncclose(mincid);
+             miclose(mincid);
 
              fprintf(stderr," Done.\n");
           }
@@ -2965,7 +2969,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
              fwhm_general = lambda_buffer->fwhm_avg;
              outfile = fwhm_general->outfile;
              fprintf(stderr,"\nUpdating %s's header.",outfile);
-             mincid = ncopen(outfile, NC_WRITE);
+             mincid = miopen(outfile, NC_WRITE);
 
              (void) ncredef(mincid);
 
@@ -2985,7 +2989,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
              ncendef(mincid);
 
-             ncclose(mincid);
+             miclose(mincid);
 
              fprintf(stderr," Done.\n");
           }
@@ -2996,7 +3000,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
              fwhm_general = lambda_buffer->fwhm_simple;
              outfile = fwhm_general->outfile;
              fprintf(stderr,"\nUpdating %s's header.",outfile);
-             mincid = ncopen(outfile, NC_WRITE);
+             mincid = miopen(outfile, NC_WRITE);
 
              (void) ncredef(mincid);
 
@@ -3016,7 +3020,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
              ncendef(mincid);
 
-             ncclose(mincid);
+             miclose(mincid);
 
              fprintf(stderr," Done.\n");
           }
@@ -3028,7 +3032,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
 
       outfile = glm_obj->error_file;
       fprintf(stderr,"\nUpdating %s's header.",outfile);
-      mincid = ncopen(outfile, NC_WRITE);
+      mincid = miopen(outfile, NC_WRITE);
 
       (void) ncredef(mincid);
 
@@ -3046,7 +3050,7 @@ void create_stat_variable(Program_Data *program_data, char **input_files)
                          glm_obj->variance_function_names[glm_obj->variance_function]);
       ncendef(mincid);
 
-      ncclose(mincid);
+      miclose(mincid);
 
       fprintf(stderr," Done.\n");
 
