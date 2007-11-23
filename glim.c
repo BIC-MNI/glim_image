@@ -1048,16 +1048,14 @@ int get_design_matrix(char *design_filename, char ***infiles,
    double   tmp_values[max_num_row][max_num_col];
 
    STRING   filename, fullname, tmp;
-   char     tmpc;
    double   value;
-   int      done;
 
    /* open the design file */
    design_file = (design_filename == NULL) ? stdin : fopen(design_filename, "r");
    if(design_file == NULL) {
       fprintf(stderr, "\nError opening design filename %s.\n\n", design_filename);
       delete_tmpfiles(&tmpfile_list);
-      return (EXIT_FAILURE);
+      return (FALSE);
    }
 
    /* get path length */
@@ -1071,15 +1069,26 @@ int get_design_matrix(char *design_filename, char ***infiles,
    if(verbose) {
       fprintf(stderr, "Reading Design file [%s]:", design_filename);
    }
-   
+
    /* for each line of the input file... */
+
+   char * tmp_string = alloc_string(10000);
+   char * delims = " \t\n\0";
+
+   /* for each line of the input file... 
+      read the entire line with mni_input_string (will know about comment
+      lines starting with #), then parse with strtok with spaces, tabs,
+      new lines as delimiters. */
+
    i = 0;
    prev_j = -1;
-   while(mni_input_string(design_file, &filename, (char)' ', (char)0) == OK) {
+   while(mni_input_string(design_file, &tmp_string, (char)0, (char)0) == OK) {
+
+      filename = strtok( tmp_string, delims );
 
       /* allocate some space for the filename */
       (*infiles)[i] = GI_MALLOC(sizeof(char) * (strlen(filename) + path_len + 1));
-      
+
       /* add in the path if required */
       if(path != NULL){
          
@@ -1090,7 +1099,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
          filename = fullname;
          fullname = tmp;
       }
-         
+
       if(strcpy((*infiles)[i], filename) == NULL) {
          fprintf(stderr, "\nError getting name of infile %d in %s.",
                  i + 1, design_filename);
@@ -1100,26 +1109,19 @@ int get_design_matrix(char *design_filename, char ***infiles,
 
       /* now get the values */
       j = 0;
-      done = FALSE;
-      while(!done) {
 
-         /* get the value */
-         input_double(design_file, &value);
-         tmp_values[i][j] = value;
-
-         /* check if we are done */
-         input_character(design_file, &tmpc);
-         done = (tmpc == '\n');
-         unget_character(design_file, tmpc);
-
-         j++;
-         if(j > max_num_col) {
-            fprintf(stderr,
-                    "\nError: more columns in design_matrix [%d] than -max_num_col [%d]\n",
-                    j, max_num_col);
-            delete_tmpfiles(&tmpfile_list);
-            exit(EXIT_FAILURE);
-         }
+      char * res = strtok( NULL, delims );
+      while( res != NULL ) {
+        tmp_values[i][j] = atof( res );
+        j++;
+        if(j > max_num_col) {
+          fprintf(stderr,
+                  "\nError: more columns in design_matrix [%d] than -max_num_col [%d]\n",
+                  j, max_num_col);
+          delete_tmpfiles(&tmpfile_list);
+          exit(EXIT_FAILURE);
+        }
+        res = strtok( NULL, " \t\n\0" );
       }
 
       /* check number of values */
@@ -1154,6 +1156,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
    fclose(design_file);
    delete_string(filename);
    delete_string(fullname);
+   delete_string(tmp_string);
    
    return TRUE;
 }
