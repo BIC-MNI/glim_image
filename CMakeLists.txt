@@ -45,7 +45,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/epm-header.in  ${CMAKE_CURRENT_BINARY
 # SET(PERL ${PERL_EXECUTABLE})
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 
-ADD_EXECUTABLE(glim_image glim.c 
+ADD_EXECUTABLE(glim_image 
+  glim.c 
   glim_image.c 
   matrix.c 
   smoothness.c
