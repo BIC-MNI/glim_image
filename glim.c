@@ -1054,7 +1054,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
    design_file = (design_filename == NULL) ? stdin : fopen(design_filename, "r");
    if(design_file == NULL) {
       fprintf(stderr, "\nError opening design filename %s.\n\n", design_filename);
-      delete_tmpfiles(&tmpfile_list);
+      //delete_tmpfiles(&tmpfile_list); //VF: files will be deleted in main 
       return (FALSE);
    }
 
