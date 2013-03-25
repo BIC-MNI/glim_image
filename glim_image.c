@@ -25,7 +25,7 @@
 #include "glim.h"
 #include "smoothness.h"
 
-#define BOOLEAN_DEFAULT (-1)
+#define VIO_BOOL_DEFAULT (-1)
 #define INVALID_DATA (-DBL_MAX)
 
 /* typedefs */
@@ -290,12 +290,12 @@ int main(int argc, char *argv[])
    Variance_Function variance_function_input;
    Corr_Struct corr_input;
    Lambda *lambda_buffer = NULL;
-   Volume tmp_volume;
+   VIO_Volume tmp_volume;
    volume_input_struct volume_input;
    int *sizes;
    int num_dim, itest, is_fwhm;
-   int volume_sizes[MAX_DIMENSIONS];
-   double volume_step[MAX_DIMENSIONS];
+   int volume_sizes[VIO_MAX_DIMENSIONS];
+   double volume_step[VIO_MAX_DIMENSIONS];
    Fwhm_Info *fwhm_general, *fwhm_gaussian;
    
    tmpfile_name = tempnam(NULL, "glim");
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
 
       if(start_volume_input(input_files[0], 3, NULL, NC_UNSPECIFIED, FALSE,
                             0.0, 0.0, TRUE, &tmp_volume,
-                            (minc_input_options *) NULL, &volume_input) != OK){
+                            (minc_input_options *) NULL, &volume_input) != VIO_OK){
          fprintf(stderr,"\nError opening %s to check for size[] and step[] for smoothness calculation.\n", input_files[0]);
          delete_tmpfiles(&tmpfile_list);
          exit(EXIT_FAILURE);

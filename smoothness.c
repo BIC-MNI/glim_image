@@ -714,7 +714,7 @@ void calculate_smoothness_ind(Fwhm_Info *fwhm_info, Lambda *lambda_buffer)
 ---------------------------------------------------------------------------- */
 int average_smoothness(char *tmp_lambda_file, char *lambda_file, double scalar)
 {
-   Volume volume;
+   VIO_Volume volume;
    nc_type in_nc_type;
    int in_signed_flag = FALSE;
    volume_input_struct volume_input;

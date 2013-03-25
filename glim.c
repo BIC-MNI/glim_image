@@ -1047,7 +1047,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
    int      path_len;
    double   tmp_values[max_num_row][max_num_col];
 
-   STRING   filename, fullname, tmp;
+   VIO_STR  filename, fullname, tmp;
    double   value;
 
    /* open the design file */
@@ -1082,7 +1082,7 @@ int get_design_matrix(char *design_filename, char ***infiles,
 
    i = 0;
    prev_j = -1;
-   while(mni_input_string(design_file, &tmp_string, (char)0, (char)0) == OK) {
+   while(mni_input_string(design_file, &tmp_string, (char)0, (char)0) == VIO_OK) {
 
       filename = strtok( tmp_string, delims );
 
