@@ -720,7 +720,7 @@ int average_smoothness(char *tmp_lambda_file, char *lambda_file, double scalar)
    volume_input_struct volume_input;
    int v1, v2, v3;
    int num_dim;
-   int sizes[MAX_DIMENSIONS];
+   int sizes[VIO_MAX_DIMENSIONS];
    double avg, values[8];
    int i;
 
