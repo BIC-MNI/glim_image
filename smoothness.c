@@ -420,7 +420,7 @@ void calculate_smoothness(Lambda *lambda_buffer)
    Fwhm_Info *fwhm_general;
 
    /* find positions for values to be used for calculating derivatives 
-      and check to see if all values of mask are OK                    */
+      and check to see if all values of mask are VIO_OK                    */
 
    lambda_buffer->test_voxel = 1.0;
 
@@ -726,7 +726,7 @@ int average_smoothness(char *tmp_lambda_file, char *lambda_file, double scalar)
 
    if(start_volume_input(tmp_lambda_file, 3, NULL, NC_UNSPECIFIED, FALSE,
                          0.0, 0.0, TRUE, &volume,
-                         (minc_input_options *) NULL, &volume_input) != OK){
+                         (minc_input_options *) NULL, &volume_input) != VIO_OK){
       fprintf(stderr,"\nError opening %s.\n", tmp_lambda_file); 
       exit(EXIT_FAILURE);
    }
@@ -738,7 +738,7 @@ int average_smoothness(char *tmp_lambda_file, char *lambda_file, double scalar)
    cancel_volume_input(volume, &volume_input);
 
    if( input_volume(tmp_lambda_file, 3, NULL, NC_FLOAT, FALSE, 0.0, 0.0,
-                    TRUE, &volume, (minc_input_options *) NULL) != OK) {
+                    TRUE, &volume, (minc_input_options *) NULL) != VIO_OK) {
       (void) fprintf(stderr, "Error reading file \"%s\"\n", tmp_lambda_file);
       return FALSE;
    }
@@ -785,7 +785,7 @@ int average_smoothness(char *tmp_lambda_file, char *lambda_file, double scalar)
 
    if( output_modified_volume(lambda_file, in_nc_type, in_signed_flag,
                      0.0, 0.0, volume, tmp_lambda_file, NULL,
-                     (minc_output_options *) NULL) != OK) {
+                     (minc_output_options *) NULL) != VIO_OK) {
       (void) fprintf(stderr, "Error writing file \"%s\"\n", lambda_file);
       return FALSE;
    }
