@@ -7,6 +7,13 @@
 @CREATED    : Sept 11, 1997 (J. Taylor)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
 
 #include "glim.h"
 #include "volume_io.h"
