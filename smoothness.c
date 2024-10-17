@@ -7,9 +7,10 @@
 @CREATED    : 
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
+#include <stdio.h>
 
-extern *tmpfile_list;
-extern *tmpfile_name;
+extern FILE *tmpfile_list;
+extern char *tmpfile_name;
 
 #include "smoothness.h"
 #include "glim.h"
