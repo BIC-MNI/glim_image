@@ -46,7 +46,7 @@ void delete_tmpfiles(FILE **tmpfile_list)
    if (num_tmpfiles > 0) {
       *tmpfile_list = fopen(tmpfile_name, "r");
 
-      while(fscanf(*tmpfile_list, "%s", &tmpstring) == 1) {
+      while(fscanf(*tmpfile_list, "%s", tmpstring) == 1) {
          is_null = TRUE;
          tmp = fopen(tmpstring,"r");
          if (tmp != NULL) {
