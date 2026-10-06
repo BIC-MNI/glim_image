@@ -1,0 +1,39 @@
+# Citation metadata for glim_image (Citation File Format, https://citation-file-format.github.io/).
+# The author list comes from the commit history and from the history comments in the files.
+
+cff-version: 1.2.0
+title: glim_image
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: Jonathan
+    family-names: Taylor
+  - given-names: Peter
+    family-names: Neelin
+  - given-names: Jason
+    family-names: Lerch
+    orcid: "https://orcid.org/0000-0001-6164-2881"
+  - given-names: Vladimir
+    family-names: Fonov
+    email: vladimir.fonov@gmail.com
+    affiliation: McGill University
+    orcid: "https://orcid.org/0000-0003-3402-7749"
+  - given-names: Andrew L.
+    family-names: Janke
+    orcid: "https://orcid.org/0000-0003-0547-5171"
+  - given-names: Claude
+    family-names: Lepage
+  - given-names: Robert D.
+    family-names: Vincent
+repository-code: "https://github.com/BIC-MNI/glim_image"
+abstract: >-
+  glim_image: tool to run general linear models across the voxels of multiple
+  MINC images.
+keywords:
+  - MINC
+  - medical imaging
+  - neuroimaging
+  - statistics
+  - general linear model
+license-url: "https://github.com/BIC-MNI/glim_image/blob/master/COPYING"
